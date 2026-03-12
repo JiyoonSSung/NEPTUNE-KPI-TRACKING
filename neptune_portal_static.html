@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root {
+    --bg:        #F5F5F5;
+    --white:     #FFFFFF;
+    --border:    #E0E0E0;
+    --accent:    #E8530A;
+    --accent-lt: #FFF0EA;
+    --accent2:   #C94400;
+    --text:      #1A1A1A;
+    --text-dim:  #444444;
+    --text-muted:#888888;
+    --green:     #1A7A4A;
+    --green-bg:  #E8F5EE;
+    --red:       #C0392B;
+    --red-bg:    #FDECEA;
+    --blue:      #1A5FAD;
+    --blue-bg:   #EAF1FB;
+    --grey-bg:   #F7F7F7;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family: -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', sans-serif; font-size:14px; line-height:1.7; }
+
+  /* 상태바 */
+  .status-bar {
+    display:flex; align-items:center; gap:10px;
+    padding:7px 32px; background:var(--text);
+    font-size:11px; font-family:'Courier New',Courier,monospace; letter-spacing:.04em;
+  }
+  .pulse { width:6px; height:6px; border-radius:50%; background:var(--accent); flex-shrink:0; animation:pulse 1.4s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .pulse.live  { background:#2ECC71; animation:none; }
+  .pulse.error { background:#E74C3C; animation:none; }
+  #status-text  { color:rgba(255,255,255,.6); }
+  #last-updated { margin-left:auto; color:rgba(255,255,255,.35); }
+
+  /* 헤더 */
+  .header {
+    background:var(--white); border-bottom:3px solid var(--accent);
+    padding:0 32px; display:flex; align-items:center; height:56px; gap:16px;
+  }
+  .header-badge { background:var(--accent); color:white; font-size:11px; font-weight:700; letter-spacing:.08em; padding:4px 10px; text-transform:uppercase; font-family:'Courier New',Courier,monospace; }
+  .header-title { font-size:15px; font-weight:700; }
+  .header-sub   { font-size:12px; color:var(--text-muted); }
+
+  /* TOC */
+  .toc { background:var(--white); border-bottom:1px solid var(--border); padding:0 32px; display:flex; overflow-x:auto; }
+  .toc a { display:block; padding:12px 16px; font-size:12px; font-weight:600; color:var(--text-muted); text-decoration:none; border-bottom:2px solid transparent; white-space:nowrap; transition:all .15s; }
+  .toc a:hover { color:var(--accent); border-bottom-color:var(--accent); }
+
+  /* 히어로 */
+  .hero { background:var(--white); border-bottom:1px solid var(--border); padding:28px 32px 24px; }
+  .hero-eyebrow { font-family:'Courier New',Courier,monospace; font-size:10px; letter-spacing:.18em; color:var(--accent); text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .hero-eyebrow::after { content:''; flex:1; height:1px; background:var(--border); }
+  .hero-title    { font-size:26px; font-weight:900; letter-spacing:-.02em; margin-bottom:6px; }
+  .hero-title span { color:var(--accent); }
+  .hero-subtitle { font-size:13px; color:var(--text-dim); margin-bottom:20px; max-width:640px; line-height:1.7; }
+  .hero-chips    { display:flex; gap:10px; flex-wrap:wrap; }
+  .chip { background:var(--grey-bg); border:1px solid var(--border); padding:5px 14px; font-size:12px; color:var(--text-muted); border-radius:2px; }
+  .chip strong { color:var(--text); }
+
+  /* 메인 */
+  .main { padding:32px; max-width:1120px; }
+  .section { margin-bottom:52px; }
+  .section-header { display:flex; align-items:center; gap:12px; margin-bottom:20px; padding-bottom:14px; border-bottom:2px solid var(--accent); }
+  .section-num { background:var(--accent); color:white; font-family:'Courier New',Courier,monospace; font-size:11px; font-weight:700; padding:3px 9px; letter-spacing:.08em; }
+  .section-title { font-size:17px; font-weight:800; }
+  .section-title-en { font-size:12px; color:var(--text-muted); font-weight:400; margin-left:6px; }
+
+  /* 인포박스 */
+  .info-box { background:var(--accent-lt); border-left:3px solid var(--accent); padding:14px 18px; margin-bottom:20px; font-size:13px; color:var(--text-dim); line-height:1.7; }
+  .info-box strong { color:var(--text); }
+
+  /* 테이블 */
+  .table-wrap { overflow-x:auto; margin-bottom:20px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; background:var(--white); border:1px solid var(--border); }
+  th { background:var(--text); color:white; font-weight:600; font-size:11px; letter-spacing:.06em; text-transform:uppercase; padding:10px 14px; text-align:left; border-right:1px solid rgba(255,255,255,.1); font-family:'Courier New',Courier,monospace; }
+  td { padding:11px 14px; border-bottom:1px solid var(--border); border-right:1px solid var(--border); vertical-align:top; color:var(--text-dim); }
+  td:last-child { border-right:none; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:var(--grey-bg); }
+  td strong { color:var(--text); font-weight:600; }
+  td small  { display:block; font-size:11px; color:var(--text-muted); margin-top:2px; }
+
+  /* 배지 */
+  .badge { display:inline-block; font-size:10px; font-weight:700; padding:2px 7px; border-radius:2px; font-family:'Courier New',Courier,monospace; letter-spacing:.04em; }
+  .on-track  { background:var(--green-bg); color:var(--green); }
+  .at-risk   { background:var(--red-bg);   color:var(--red); }
+  .completed { background:var(--blue-bg);  color:var(--blue); }
+  .tbu       { background:var(--grey-bg);  color:var(--text-muted); border:1px solid var(--border); }
+  .pending   { background:#FFF8E1; color:#B8860B; }
+
+  /* 이니셔티브 그리드 */
+  .initiative-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:20px; }
+  .init-card { background:var(--white); border:1px solid var(--border); border-top:3px solid var(--accent); padding:18px; font-size:13px; }
+  .init-num-label { display:block; background:var(--accent); color:white; font-size:12px; font-weight:700; padding:4px 10px; margin:-18px -18px 14px -18px; font-family:'Courier New',Courier,monospace; line-height:1.5; }
+  .init-section-label { font-size:12px; font-weight:700; color:var(--text); margin-top:10px; margin-bottom:2px; }
+  .init-section-body  { font-size:12px; color:var(--text-dim); line-height:1.6; }
+  .init-list { padding-left:18px; margin:4px 0; }
+  .init-list li { font-size:12px; color:var(--text-dim); line-height:1.7; }
+  .tbu-text { font-style:italic; color:var(--text-muted); font-weight:400; }
+  .kpi-skeleton { height:12px; background:var(--border); border-radius:2px; margin:6px 0; animation:shimmer 1.2s infinite; }
+  @keyframes shimmer { 0%{opacity:.5} 50%{opacity:1} 100%{opacity:.5} }
+  .kpi-list { display:flex; flex-direction:column; gap:6px; margin-top:4px; }
+  .kpi-item { display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--text-muted); gap:6px; }
+  .kpi-name { flex:1; }
+  .kpi-val  { font-family:'Courier New',Courier,monospace; font-size:11px; color:var(--text-dim); }
+  .kpi-status { font-family:'Courier New',Courier,monospace; font-size:10px; font-weight:700; padding:1px 6px; border-radius:2px; white-space:nowrap; }
+
+  /* 매출 테이블 */
+  .td-accent { color:var(--accent); font-weight:700; }
+  .tr-total  { background:var(--accent-lt); }
+  .tr-total td { font-weight:700; color:var(--text); }
+  .tr-skeleton td { padding:8px 14px; }
+  .row-skeleton { height:14px; background:var(--border); border-radius:2px; animation:shimmer 1.2s infinite; }
+
+  /* 인텔리전스 카드 */
+  .intel-card { background:var(--white); border:1px solid var(--border); border-left:3px solid var(--accent); margin-bottom:12px; overflow:hidden; }
+  .intel-header { display:flex; align-items:center; gap:10px; padding:10px 16px; background:var(--grey-bg); border-bottom:1px solid var(--border); }
+  .intel-tag { font-size:10px; font-weight:700; letter-spacing:.06em; padding:2px 8px; background:var(--accent-lt); color:var(--accent); border-radius:2px; text-transform:uppercase; font-family:'Courier New',Courier,monospace; }
+  .intel-date { font-size:11px; color:var(--text-muted); font-family:'Courier New',Courier,monospace; }
+  .intel-source { margin-left:auto; font-size:11px; color:var(--text-muted); background:var(--white); padding:2px 8px; border:1px solid var(--border); border-radius:2px; }
+  .intel-body { padding:14px 16px; }
+  .intel-lead { font-size:13px; font-weight:700; color:var(--text); margin-bottom:10px; line-height:1.5; }
+  .intel-points { list-style:none; display:flex; flex-direction:column; gap:5px; }
+  .intel-points li { font-size:12px; color:var(--text-dim); padding-left:14px; position:relative; line-height:1.7; }
+  .intel-points li::before { content:'·'; position:absolute; left:0; color:var(--accent); font-size:18px; line-height:1.2; }
+
+  /* 타임라인 */
+  .timeline { border-left:2px solid var(--border); padding-left:24px; margin-left:8px; }
+  .tl-item { position:relative; padding-bottom:24px; }
+  .tl-item::before { content:''; position:absolute; left:-29px; top:6px; width:10px; height:10px; background:var(--white); border:2px solid var(--accent); border-radius:50%; }
+  .tl-date  { font-family:'Courier New',Courier,monospace; font-size:11px; color:var(--accent); margin-bottom:3px; font-weight:600; }
+  .tl-title { font-size:13px; font-weight:700; color:var(--text); margin-bottom:6px; }
+  .tl-body  { font-size:12px; color:var(--text-dim); line-height:1.7; }
+</style>
+</head>
+<body>
+
+
+
+  <span id="status-text">Google Sheets에서 데이터 불러오는 중...</span>
+  <span id="last-updated"></span>
+</div>
+
+<!-- 헤더 -->
+<div class="header">
+  <div class="header-badge">CO-028</div>
+  <div class="header-title">넵튠 투자 관리 포털</div>
+  <span class="header-sub">&nbsp;·&nbsp;Neptune Investment Management Portal</span>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <a href="#meetings">넵튠 관련 회의체</a>
+  <a href="#initiatives">Strategic Initiatives</a>
+  <a href="#intel">시장 및 경쟁 인텔리전스</a>
+  <a href="#pmi">PMI & Integration</a>
+  <a href="#agenda">중요 아젠다</a>
+</div>
+
+<!-- 히어로 -->
+<div class="hero">
+  <div class="hero-eyebrow">Neptune Investment Management Portal</div>
+  <div class="hero-title">넵튠 <span>투자 관리</span> 포털</div>
+  <div class="hero-subtitle">넵튠 투자 이후 사업 진행 현황 모니터링 및 PMI 진행 상황을 통합 관리하는 메인 페이지. Chairman과 주요 리더십이 핵심 사안을 빠르고 일관되게 인지하고 공유 받는 허브 공간.</div>
+  <div class="hero-chips">
+    <div class="chip">관리: <strong>Chairman's Office (성지윤, 조하은)</strong></div>
+    <div class="chip">크래프톤 지분: <strong>45%</strong></div>
+    <div class="chip">투자 가설: <strong>Mini AppLovin</strong></div>
+    <div class="chip">2028 목표: <strong>3,638억 원</strong></div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ────────────────────────────────── -->
+  <!-- 01. 넵튠 관련 회의체               -->
+  <!-- ────────────────────────────────── -->
+  <div class="section" id="meetings">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div class="section-title">넵튠 관련 회의체 <span class="section-title-en">Governance & Meeting Structure</span></div>
+    </div>
+    <div class="info-box">
+      크래프톤과 넵튠 간 보고 및 의사결정 체계는 각 회의체의 성격과 기능에 따라 병렬적으로 운영됨.<br>
+      <strong>업데이트 원칙:</strong> Chairman 참석 회의 인비에 DL 추가 시 담당자(성지윤)가 포털 반영 지원. 회의 이끌이는 자료·회의록/피드백 링크를 Portal에 반영 필요.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>주체</th><th>회의체</th><th>주기</th><th>목적</th><th>주요 참석자</th><th>일정</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>크래프톤</strong></td>
+            <td><strong>월간 경영 세션</strong></td>
+            <td>월간</td>
+            <td>크래프톤-넵튠 경영 현안 논의, 사업 방향성 합의</td>
+            <td>장병규 의장, 이병욱 센터장, 박상훈, 성지윤, 조하은<br><small>넵튠: 강율빈 대표</small></td>
+            <td><span class="badge pending">예정</span><small>제7회 2025.11.24</small></td>
+          </tr>
+          <tr>
+            <td><strong>크래프톤</strong></td>
+            <td><strong>크래프톤 이사회</strong></td>
+            <td>분기</td>
+            <td>넵튠 사업 로드맵 공유, 이사회 안건 상정 및 승인</td>
+            <td>크래프톤 이사회, 크래프톤 경영진</td>
+            <td><span class="badge completed">완료</span><small>2025 4Q 정기이사회</small></td>
+          </tr>
+          <tr>
+            <td><strong>크래프톤</strong></td>
+            <td><strong>크래프톤 경영진 보고</strong></td>
+            <td>비정기</td>
+            <td>주요 안건 발생 시 경영진 보고·공유 및 승인</td>
+            <td>크래프톤 경영진</td>
+            <td><span class="badge completed">완료</span><small>CEO 미팅 2025.10.27</small></td>
+          </tr>
+          <tr>
+            <td><strong>넵튠</strong></td>
+            <td><strong>넵튠 이사회</strong></td>
+            <td>분기</td>
+            <td>넵튠 관련 중요 경영 의사결정, 정관상 이사회 권한 내 안건 의결</td>
+            <td>넵튠 이사회, 넵튠 경영진</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────── -->
+  <!-- 02. Strategic Initiatives (LIVE)   -->
+  <!-- ────────────────────────────────── -->
+  <div class="section" id="initiatives">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div class="section-title">Strategic Initiatives <span class="section-title-en">Live · Google Sheets 연동</span></div>
+    </div>
+    <div class="info-box">
+      <strong>투자 가설:</strong> '미니 앱러빈(Mini AppLovin)' 모델 — 게임과 애드테크가 결합된 통합 사업 모델 실행 중.<br>
+      <strong>2028 목표:</strong> 총 매출 3,638억 원 (신사업 매출 1,418억 원 포함) | <strong>모니터링:</strong> 분기 단위
+    </div>
+        <div class="initiative-grid" id="initiative-grid">
+
+      <!-- ① 하이브리드 캐주얼 -->
+      <div class="init-card">
+        <div class="init-num-label">① 하이브리드 캐주얼 게임 퍼블리싱</div>
+        <div class="init-section-label">DRI:</div>
+        <div class="init-section-body">최치웅 본부장</div>
+        <div class="init-section-label">최종 목표:</div>
+        <div class="init-section-body">2028년까지 60개 개발사, 90개 게임 출시, 1,048억원 매출 목표로, 한국, 베트남 등에서 사업을 전개함</div>
+        <div class="init-section-label">2025년 4Q 목표:</div>
+        <ul class="init-list">
+          <li>사업구조, 경쟁우위 확인</li>
+          <li>(4Q) Plan A팀 확정(트리플라)</li>
+          <li>(4Q) Plan B팀 리더 탐색</li>
+        </ul>
+        <div class="init-section-label">진행 상황: <span class="tbu-text">(TBU)</span></div>
+        <div class="init-section-label">핵심 지표 모니터링:</div>
+        <div class="kpi-list">
+          <div class="kpi-item"><span class="kpi-name">수익<span class="kpi-val"> (▲xx%)</span></span><span class="kpi-status on-track">ON TRACK</span></div>
+          <div class="kpi-item"><span class="kpi-name">게임당 연평균 실적<span class="kpi-val"> xxx (▼xx%)</span></span><span class="kpi-status on-track">ON TRACK</span></div>
+          <div class="kpi-item"><span class="kpi-name">게임 포트폴리오 수<span class="kpi-val"> xxx (▲xx%)</span></span><span class="kpi-status on-track">ON TRACK</span></div>
+          <div class="kpi-item"><span class="kpi-name">신규 개발팀 수<span class="kpi-val"> xxx (▼xx%)</span></span><span class="kpi-status at-risk">AT RISK</span></div>
+          <div class="kpi-item"><span class="kpi-name">런칭 게임 수<span class="kpi-val"> (▲xx%)</span></span><span class="kpi-status at-risk">AT RISK</span></div>
+          <div class="kpi-item"><span class="kpi-name">성공 신작 수<span class="kpi-val"> (▲xx%)</span></span><span class="kpi-status on-track">ON TRACK</span></div>
+        </div>
+        <div class="init-section-label">리스크 요약: <span class="tbu-text">(TBU)</span></div>
+        <div class="init-section-label">대응 방안: <span class="tbu-text">(TBU)</span></div>
+        <div class="init-section-label">관련 문서: <span class="tbu-text">(TBU)</span></div>
+        <div style="margin-top:10px;font-size:11px;color:var(--text-muted)">주석: 1) 게임당 연평균 실적 × 게임 포트폴리오 수</div>
+      </div>
+
+      <!-- ② 인도 프리미엄 광고 -->
+      <div class="init-card">
+        <div class="init-num-label">② 인도 프리미엄 광고 생태계 구축</div>
+        <div class="init-section-label">DRI:</div>
+        <div class="init-section-body">권승현 본부장</div>
+        <div class="init-section-label">최종 목표:</div>
+        <div class="init-section-body">2028년까지 연간 10억원 광고 매출 창출이 가능한 매체 20개를 확보하여 320억원 매출을 목표로 함</div>
+        <div class="init-section-label">2025년 4Q 목표:</div>
+        <ul class="init-list">
+          <li>(4Q) 인도법인 사전 조사</li>
+          <li>(4Q) 광고주향 시장 조사</li>
+          <li>(4Q) 영업조직 세팅 준비</li>
+        </ul>
+        <div class="init-section-label">진행 상황: <span class="tbu-text">(TBU)</span></div>
+        <div class="init-section-label">핵심 지표 모니터링:</div>
+        <div class="kpi-list">
+          <div class="kpi-item"><span class="kpi-name">프리미엄 매체 수<span class="kpi-val"> xxx (▲xx%)</span></span><span class="kpi-status on-track">ON TRACK</span></div>
+          <div class="kpi-item"><span class="kpi-name">매체당 연간 광고 수익<span class="kpi-val"> xxx (▲xx%)</span></span><span class="kpi-status on-track">ON TRACK</span></div>
+        </div>
+        <div class="init-section-label">리스크 요약: <span class="tbu-text">(TBU)</span></div>
+        <div class="init-section-label">대응 방안: <span class="tbu-text">(TBU)</span></div>
+        <div class="init-section-label">관련 문서: <span class="tbu-text">(TBU)</span></div>
+      </div>
+
+      <!-- ③ 자체 DSP -->
+      <div class="init-card">
+        <div class="init-num-label">③ 자체 DSP 구축</div>
+        <div class="init-section-label">DRI:</div>
+        <div class="init-section-body">김창주 본부장</div>
+        <div class="init-section-label">최종 목표:</div>
+        <div class="init-section-body">2026년 상반기까지 DSP 버전 1을 개발 및 런칭하고, 2027년 외부 Ad Exchange를 연결, 2028년 본격적으로 DSP를 확장해 50억 원 매출을 목표로 함</div>
+        <div class="init-section-label">2025년 4Q 목표:</div>
+        <ul class="init-list"><li>(TBU)</li></ul>
+        <div class="init-section-label">진행 상황: <span class="tbu-text">(TBU)</span></div>
+        <div class="init-section-label">핵심 지표 모니터링:</div>
+        <div class="kpi-list">
+          <div class="kpi-item"><span class="kpi-name">(TBU)</span><span class="kpi-status tbu">TBU</span></div>
+        </div>
+        <div class="init-section-label">리스크 요약: <span class="tbu-text">(TBU)</span></div>
+        <div class="init-section-label">대응 방안: <span class="tbu-text">(TBU)</span></div>
+        <div class="init-section-label">관련 문서: <span class="tbu-text">(TBU)</span></div>
+      </div>
+
+    </div>
+
+    <!-- 매출 로드맵 (LIVE) -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>구분 (억 원)</th><th>2025</th><th>2026</th><th>2027</th><th>2028</th></tr>
+        </thead>
+        <tbody id="revenue-tbody">
+          <tr><td><strong>① 하이브리드 캐주얼</strong></td><td>—</td><td>209</td><td>626</td><td>1,048</td></tr>
+          <tr><td><strong>② 인도 프리미엄 광고</strong></td><td>—</td><td>20</td><td>220</td><td>320</td></tr>
+          <tr><td><strong>③ 자체 DSP</strong></td><td>—</td><td>—</td><td>—</td><td>50</td></tr>
+          <tr><td><strong>기존 사업</strong></td><td>1,241</td><td>1,638</td><td>1,930</td><td>2,220</td></tr>
+          <tr class="tr-total"><td><strong>전체 매출</strong></td><td><strong>1,241</strong></td><td><strong>1,867</strong></td><td><strong>2,776</strong></td><td class="td-accent"><strong>3,638</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────── -->
+  <!-- 03. 시장 및 경쟁 인텔리전스         -->
+  <!-- ────────────────────────────────── -->
+  <div class="section" id="intel">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div class="section-title">시장 및 경쟁 인텔리전스 <span class="section-title-en">Market & Competitive Intelligence</span></div>
+    </div>
+    <div class="info-box">
+      넵튠 애드테크 사업 관련 외부 환경 변화·경쟁사 동향을 체계적으로 수집·분석.
+      업계 전문가 네트워킹, 뉴스/DB 플랫폼 등 다채널로 <strong>일 단위 수집</strong>, 전략적 시사점 도출.
+    </div>
+
+    <div class="intel-card">
+      <div class="intel-header">
+        <div class="intel-tag">AppLovin</div>
+        <div class="intel-date">2025.11.04</div>
+        <div class="intel-source">네트워킹</div>
+      </div>
+      <div class="intel-body">
+        <div class="intel-lead">AppLovin 전 임원 (현 Cheers Game Studio CEO) 네트워킹 — 전략 방향성 및 하이브리드캐주얼 시장 동향 확인</div>
+        <ul class="intel-points">
+          <li>AppLovin, CTV 확장 등 애드테크 신사업에 집중. 게임 영역에선 데이터 확보 구조 완성 후 자회사 스튜디오 운영 축소 → 신진 사업자에게 장기 기회 요인</li>
+          <li>IAP+IAA 결합 '하이브리드캐주얼 게임' 매우 유망. 터키·인도·파키스탄 등 신흥국이 주요 생산지로 부상</li>
+          <li>게임 영역 AppLovin 경쟁 우위 확고, 대안 없음 (Google 고려 가능하나 UA 효율 낮음)</li>
+          <li>넵튠, 하이브리드캐주얼 개발사 검토 시 인도·베트남 외 터키까지 확장 검토 권장</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="intel-card">
+      <div class="intel-header">
+        <div class="intel-tag">AppLovin</div>
+        <div class="intel-date">2025.11.11</div>
+        <div class="intel-source">보도자료</div>
+      </div>
+      <div class="intel-body">
+        <div class="intel-lead">AppLovin, 애드테크 중심 기업으로 완전 전환 — CTV·신규 영역 확장하며 지속 성장</div>
+        <ul class="intel-points">
+          <li>최근 5년 소프트웨어 플랫폼 매출 연평균 94% 성장, 조정 EBITDA 마진 約90% 달성</li>
+          <li>게임 스튜디오 축소, 데이터·UA·수익화 기술 중심 애드테크 플랫폼 집중 전략 수행 중</li>
+          <li>멀티 광고 생태계로 이동 중 — 게임 중심 구조 탈피</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="intel-card">
+      <div class="intel-header">
+        <div class="intel-tag">글로벌 애드테크</div>
+        <div class="intel-date">2025.10~11</div>
+        <div class="intel-source">보도자료</div>
+      </div>
+      <div class="intel-body">
+        <div class="intel-lead">글로벌 애드테크 시장, '대형 앱 자체 플랫폼 구축'과 '데이터·규제 변화'로 빠르게 재편</div>
+        <ul class="intel-points">
+          <li>듀오링고 자체 광고 플랫폼 출시. 일정 규모 이상 앱들의 자체 광고 플랫폼 구축 흐름 강화 전망</li>
+          <li>Meta, 게임 앱 광고 캠페인에서 'ROAS 캠페인' 지원 시작. UA 성과가 애드테크 플랫폼 중심으로 재편 중</li>
+          <li>쿠키/디바이스 ID 약화 → IP·네트워크 기반 검증 업계 표준 부상. IVT로 매년 수십억 달러 낭비</li>
+          <li>신흥시장(인도·한국) VPN·프록시 기반 IVT 리스크 높아 → '정제된 트래픽 제공' 플레이어가 경쟁 우위 확보</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="intel-card">
+      <div class="intel-header">
+        <div class="intel-tag">하이브리드캐주얼</div>
+        <div class="intel-date">2025.11.12</div>
+        <div class="intel-source">네트워킹</div>
+      </div>
+      <div class="intel-body">
+        <div class="intel-lead">하이브리드 캐주얼 시장, 신흥국 중심 빠른 확장 — AppLovin 의존도·CPI 상승으로 대안 필요성 증가</div>
+        <ul class="intel-points">
+          <li>터키·인도·파키스탄·베트남 등 신흥국이 하이브리드 캐주얼 주요 생산지로 부상</li>
+          <li>AppLovin 의존도 높고 최근 CPI 상승 → 개발사 LTV 압박 증가, 대안 수요 확산</li>
+          <li>모방작 경쟁 심화로 제작 속도·모듈화 중요성 증가, 수익화/BM 역량 수요 높아짐</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="intel-card">
+      <div class="intel-header">
+        <div class="intel-tag">인도 광고 시장</div>
+        <div class="intel-date">2025.11</div>
+        <div class="intel-source">보도자료</div>
+      </div>
+      <div class="intel-body">
+        <div class="intel-lead">인도 디지털 광고, 고성장 전망 — 비효율 구조 속 기회 요인, 글로벌 사업자 진입 가속</div>
+        <ul class="intel-points">
+          <li>2025년 인도 디지털 광고 지출 약 $5.19B 전망, 온라인 비디오 시청자 6억 명 이상</li>
+          <li>광고 예산의 28%가 문맥 불일치·언어 미스매치로 낭비 → Contextual Precision 요구 확대</li>
+          <li>Yahoo DSP × Spotify, Jio × Google Gemini 등 글로벌 플레이어 인도 진입 확대</li>
+          <li>인도 DPDP Rules 2025 공표 (2025.11.13) → 동의 관리·데이터 고지·유출 통지 강화</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────── -->
+  <!-- 04. PMI & Integration              -->
+  <!-- ────────────────────────────────── -->
+  <div class="section" id="pmi">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div class="section-title">넵튠 PMI & Integration <span class="section-title-en">Post-Merger Integration</span></div>
+    </div>
+    <div class="info-box">
+      <strong>PMI 핵심 목표:</strong> 넵튠(크래프톤 45% 지분 종속회사) 효율적 관리·감독 기반 마련.<br>
+      <strong>핵심 방향:</strong> 재무 기능 중심 통합 + IT 시스템 활용 리스크 대응 체계 병행.<br>
+      <strong>1차 통합 목표:</strong> 2026년 1월 회계 시스템 도입 완료 → 이후 운영·관리 단계 전환.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>통합 영역</th><th>목표</th><th>상태</th><th>진행 현황</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>거버넌스 — 이사회 재정비</strong></td>
+            <td>넵튠 이사회 구조 재편 및 크래프톤 통제권 확보</td>
+            <td><span class="badge on-track">ON TRACK</span><small>(2026. 1Q)</small></td>
+            <td>2025.07 이사회 축소 완료<br>2026.03 크래프톤 인사 선임 예정</td>
+          </tr>
+          <tr>
+            <td><strong>거버넌스 — 월간 경영 세션</strong></td>
+            <td>크래프톤-넵튠 경영 씽크 정기 세션</td>
+            <td><span class="badge on-track">ON TRACK</span></td>
+            <td>2025.06 최초 시작, 월 단위 진행 중</td>
+          </tr>
+          <tr>
+            <td><strong>재무</strong></td>
+            <td>회계·재무 프로세스 크래프톤 기준 통합</td>
+            <td><span class="badge completed">COMPLETED</span><small>(2026. 1Q)</small></td>
+            <td>SAP/Concur/Kissflow 도입 진행 중 (2026.01 완료 목표)</td>
+          </tr>
+          <tr>
+            <td><strong>법무·컴플라이언스</strong></td>
+            <td>그룹 수준 리스크 관리 체계 확보</td>
+            <td><span class="badge completed">COMPLETED</span><small>(2026. 1Q)</small></td>
+            <td>법무/IR 사전공유 체계 정립, Kissflow 통한 내부통제 보완 중<br>상장사 특성 고려 '사전 조율형 거버넌스'로 관리</td>
+          </tr>
+          <tr>
+            <td><strong>IT</strong></td>
+            <td>유사시 리스크 대응 가능한 IT 체계 구축</td>
+            <td><span class="badge on-track">ON TRACK</span><small>(2026. 1Q)</small></td>
+            <td>IT·보안·법무 등과 "IT를 통한 리스크 대응 체계" 수립 중</td>
+          </tr>
+          <tr>
+            <td><strong>HR — 경영진 보상안 설계</strong></td>
+            <td>넵튠 핵심 인력 리텐션 플랜 확정</td>
+            <td><span class="badge on-track">ON TRACK</span><small>(2026. 1Q)</small></td>
+            <td>크래프톤 주가·그룹 가치 제고 연동 방향으로 설계 예정</td>
+          </tr>
+          <tr>
+            <td><strong>HR — Workday 도입</strong></td>
+            <td>회계 시스템 연동 최소 범위 기능 도입</td>
+            <td><span class="badge completed">COMPLETED</span><small>(2025. 4Q)</small></td>
+            <td>인사 시스템 전면 통합 없이 최소 범위 Workday 기능만 도입</td>
+          </tr>
+          <tr>
+            <td><strong>KLT 발표</strong></td>
+            <td>넵튠-크래프톤 전략 시너지 대외 공유</td>
+            <td><span class="badge completed">COMPLETED</span></td>
+            <td>2025.12 KLT 발표 완료</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ────────────────────────────────── -->
+  <!-- 05. 중요 아젠다                     -->
+  <!-- ────────────────────────────────── -->
+  <div class="section" id="agenda">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div class="section-title">중요 아젠다 <span class="section-title-en">Key Agenda</span></div>
+    </div>
+
+    <!-- 서브섹션: 보상안 -->
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+      <div style="width:4px; height:20px; background:var(--accent); flex-shrink:0;"></div>
+      <div style="font-size:14px; font-weight:700;">넵튠 경영진(핵심인력) 보상안 설계 진행 현황</div>
+      <span class="badge on-track" style="margin-left:8px;">ON TRACK</span>
+    </div>
+
+    <div class="info-box">
+      크래프톤 주가와 그룹 가치 제고에 기여할 수 있는 방향으로, 넵튠 애드테크(미니 앱로빈) 사업 목표와 성과에 직접 연동하여 설계 중.
+      넵튠 경영진 인센티브는 <strong>크래프톤 주가 연동보다 사업 성과 직접 연동</strong>이 적절하다는 방향으로 논의 중.
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">2025.07.16</div>
+        <div class="tl-title">의장님 격주회의 — 넵튠 경영진 보상안 진행 현황 문의</div>
+        <div class="tl-body">의장님이 딜 추진 당시 논의한 보상안 상세 내용 및 진행 현황 문의. 당시 두 각자 대표와 경영진 및 핵심 인력 성과 보상안 관련 논의가 있었으나 세부 조건(KPI, 보상 재원, 지급 방식 등)은 추후 결정하기로 함. 조하은님이 팔로우업하기로 함.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2025.07.28</div>
+        <div class="tl-title">보상안 관련 히스토리 정리 — 의장님 전달</div>
+        <div class="tl-body">크래프톤이 카카오게임즈와의 협상 과정에서 넵튠 두 각자 대표와 논의한 보상안 관련 내용 정리. 개략적 방향성 및 일부 조건에 대해 합의, 세부 조건은 추후 구체화 예정.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2025.09.15</div>
+        <div class="tl-title">크래프톤 HR·의장실 1차 미팅</div>
+        <div class="tl-body">보상안은 과거 합의에 단순 의존하지 말고 현 시점에서 크래프톤과의 전략적 정합성 관점에서 검토 필요. 복잡한 KPI는 지표 최적화에 집착하게 만들어 전체 기업 가치와 괴리될 수 있으므로, 단순하고 기업가치와 직결되는 방식으로 설계 필요. HR은 Expected Value와 외부 벤치마크를 제시하여 합리적 보상안 마련.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2025.10.01</div>
+        <div class="tl-title">크래프톤 HR·의장실 2차 미팅</div>
+        <div class="tl-body">크래프톤 본부장 보상 수준과의 형평성 검토 필요. 넵튠 경영진 인센티브는 애드테크(미니 앱로빈) 사업 목표와 성과에 직접 연동. 크래프톤 주가 연동은 상관관계 불명확하여 주된 보상으로 부적절. 강율빈 대표 구상 중인 사업 로드맵 및 재무 시뮬레이션에 맞춰 보상안 설계.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2025.10.31</div>
+        <div class="tl-title">크래프톤 HR·의장실 미팅 — 재무 시뮬레이션 전달</div>
+        <div class="tl-body">조하은님이 넵튠의 사업 로드맵 실적 전망 안을 크래프톤 HR에 전달. 크래프톤 HR에서 사업 로드맵에 기반한 넵튠 경영진 및 핵심 인력 대상 보상 패키지 설계 중.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+</body>
+</html>
