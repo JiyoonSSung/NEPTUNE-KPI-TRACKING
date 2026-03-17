@@ -172,7 +172,7 @@
     <div class="chip">관리: <strong>Chairman's Office (성지윤, 조하은)</strong></div>
     <div class="chip">크래프톤 지분: <strong>45%</strong></div>
     <div class="chip">투자 가설: <strong>Mini AppLovin</strong></div>
-    <div class="chip">2028 목표: <strong>3,638억 원</strong></div>
+    <div class="chip">2028 목표: <strong id="target-rev">로딩 중...</strong></div>
   </div>
 </div>
 
@@ -245,80 +245,17 @@
       <strong>투자 가설:</strong> '미니 앱러빈(Mini AppLovin)' 모델 — 게임과 애드테크가 결합된 통합 사업 모델 실행 중.<br>
       <strong>2028 목표:</strong> 총 매출 3,638억 원 (신사업 매출 1,418억 원 포함) | <strong>모니터링:</strong> 분기 단위
     </div>
-        <div class="initiative-grid" id="initiative-grid">
+        <!-- 상태바 -->
+    <div class="status-bar">
+      <div class="pulse" id="pulse"></div>
+      <span id="status-text">Google Sheets에서 데이터 불러오는 중...</span>
+      <span id="last-updated"></span>
+    </div>
 
-      <!-- ① 하이브리드 캐주얼 -->
-      <div class="init-card">
-        <div class="init-num-label">① 하이브리드 캐주얼 게임 퍼블리싱</div>
-        <div class="init-section-label">DRI:</div>
-        <div class="init-section-body">최치웅 본부장</div>
-        <div class="init-section-label">최종 목표:</div>
-        <div class="init-section-body">2028년까지 60개 개발사, 90개 게임 출시, 1,048억원 매출 목표로, 한국, 베트남 등에서 사업을 전개함</div>
-        <div class="init-section-label">2025년 4Q 목표:</div>
-        <ul class="init-list">
-          <li>사업구조, 경쟁우위 확인</li>
-          <li>(4Q) Plan A팀 확정(트리플라)</li>
-          <li>(4Q) Plan B팀 리더 탐색</li>
-        </ul>
-        <div class="init-section-label">진행 상황: <span class="tbu-text">(TBU)</span></div>
-        <div class="init-section-label">핵심 지표 모니터링:</div>
-        <div class="kpi-list">
-          <div class="kpi-item"><span class="kpi-name">수익<span class="kpi-val"> (▲xx%)</span></span><span class="kpi-status on-track">ON TRACK</span></div>
-          <div class="kpi-item"><span class="kpi-name">게임당 연평균 실적<span class="kpi-val"> xxx (▼xx%)</span></span><span class="kpi-status on-track">ON TRACK</span></div>
-          <div class="kpi-item"><span class="kpi-name">게임 포트폴리오 수<span class="kpi-val"> xxx (▲xx%)</span></span><span class="kpi-status on-track">ON TRACK</span></div>
-          <div class="kpi-item"><span class="kpi-name">신규 개발팀 수<span class="kpi-val"> xxx (▼xx%)</span></span><span class="kpi-status at-risk">AT RISK</span></div>
-          <div class="kpi-item"><span class="kpi-name">런칭 게임 수<span class="kpi-val"> (▲xx%)</span></span><span class="kpi-status at-risk">AT RISK</span></div>
-          <div class="kpi-item"><span class="kpi-name">성공 신작 수<span class="kpi-val"> (▲xx%)</span></span><span class="kpi-status on-track">ON TRACK</span></div>
-        </div>
-        <div class="init-section-label">리스크 요약: <span class="tbu-text">(TBU)</span></div>
-        <div class="init-section-label">대응 방안: <span class="tbu-text">(TBU)</span></div>
-        <div class="init-section-label">관련 문서: <span class="tbu-text">(TBU)</span></div>
-        <div style="margin-top:10px;font-size:11px;color:var(--text-muted)">주석: 1) 게임당 연평균 실적 × 게임 포트폴리오 수</div>
-      </div>
-
-      <!-- ② 인도 프리미엄 광고 -->
-      <div class="init-card">
-        <div class="init-num-label">② 인도 프리미엄 광고 생태계 구축</div>
-        <div class="init-section-label">DRI:</div>
-        <div class="init-section-body">권승현 본부장</div>
-        <div class="init-section-label">최종 목표:</div>
-        <div class="init-section-body">2028년까지 연간 10억원 광고 매출 창출이 가능한 매체 20개를 확보하여 320억원 매출을 목표로 함</div>
-        <div class="init-section-label">2025년 4Q 목표:</div>
-        <ul class="init-list">
-          <li>(4Q) 인도법인 사전 조사</li>
-          <li>(4Q) 광고주향 시장 조사</li>
-          <li>(4Q) 영업조직 세팅 준비</li>
-        </ul>
-        <div class="init-section-label">진행 상황: <span class="tbu-text">(TBU)</span></div>
-        <div class="init-section-label">핵심 지표 모니터링:</div>
-        <div class="kpi-list">
-          <div class="kpi-item"><span class="kpi-name">프리미엄 매체 수<span class="kpi-val"> xxx (▲xx%)</span></span><span class="kpi-status on-track">ON TRACK</span></div>
-          <div class="kpi-item"><span class="kpi-name">매체당 연간 광고 수익<span class="kpi-val"> xxx (▲xx%)</span></span><span class="kpi-status on-track">ON TRACK</span></div>
-        </div>
-        <div class="init-section-label">리스크 요약: <span class="tbu-text">(TBU)</span></div>
-        <div class="init-section-label">대응 방안: <span class="tbu-text">(TBU)</span></div>
-        <div class="init-section-label">관련 문서: <span class="tbu-text">(TBU)</span></div>
-      </div>
-
-      <!-- ③ 자체 DSP -->
-      <div class="init-card">
-        <div class="init-num-label">③ 자체 DSP 구축</div>
-        <div class="init-section-label">DRI:</div>
-        <div class="init-section-body">김창주 본부장</div>
-        <div class="init-section-label">최종 목표:</div>
-        <div class="init-section-body">2026년 상반기까지 DSP 버전 1을 개발 및 런칭하고, 2027년 외부 Ad Exchange를 연결, 2028년 본격적으로 DSP를 확장해 50억 원 매출을 목표로 함</div>
-        <div class="init-section-label">2025년 4Q 목표:</div>
-        <ul class="init-list"><li>(TBU)</li></ul>
-        <div class="init-section-label">진행 상황: <span class="tbu-text">(TBU)</span></div>
-        <div class="init-section-label">핵심 지표 모니터링:</div>
-        <div class="kpi-list">
-          <div class="kpi-item"><span class="kpi-name">(TBU)</span><span class="kpi-status tbu">TBU</span></div>
-        </div>
-        <div class="init-section-label">리스크 요약: <span class="tbu-text">(TBU)</span></div>
-        <div class="init-section-label">대응 방안: <span class="tbu-text">(TBU)</span></div>
-        <div class="init-section-label">관련 문서: <span class="tbu-text">(TBU)</span></div>
-      </div>
-
+    <div class="initiative-grid" id="initiative-grid">
+      <div class="init-card"><div class="kpi-skeleton" style="width:40%;height:18px;margin-bottom:10px"></div><div class="kpi-skeleton" style="width:85%;margin-bottom:6px"></div><div class="kpi-skeleton" style="width:65%"></div></div>
+      <div class="init-card"><div class="kpi-skeleton" style="width:40%;height:18px;margin-bottom:10px"></div><div class="kpi-skeleton" style="width:85%;margin-bottom:6px"></div><div class="kpi-skeleton" style="width:65%"></div></div>
+      <div class="init-card"><div class="kpi-skeleton" style="width:40%;height:18px;margin-bottom:10px"></div><div class="kpi-skeleton" style="width:85%;margin-bottom:6px"></div><div class="kpi-skeleton" style="width:65%"></div></div>
     </div>
 
     <!-- 매출 로드맵 (LIVE) -->
@@ -328,11 +265,11 @@
           <tr><th>구분 (억 원)</th><th>2025</th><th>2026</th><th>2027</th><th>2028</th></tr>
         </thead>
         <tbody id="revenue-tbody">
-          <tr><td><strong>① 하이브리드 캐주얼</strong></td><td>—</td><td>209</td><td>626</td><td>1,048</td></tr>
-          <tr><td><strong>② 인도 프리미엄 광고</strong></td><td>—</td><td>20</td><td>220</td><td>320</td></tr>
-          <tr><td><strong>③ 자체 DSP</strong></td><td>—</td><td>—</td><td>—</td><td>50</td></tr>
-          <tr><td><strong>기존 사업</strong></td><td>1,241</td><td>1,638</td><td>1,930</td><td>2,220</td></tr>
-          <tr class="tr-total"><td><strong>전체 매출</strong></td><td><strong>1,241</strong></td><td><strong>1,867</strong></td><td><strong>2,776</strong></td><td class="td-accent"><strong>3,638</strong></td></tr>
+          <tr class="tr-skeleton"><td colspan="5"><div class="row-skeleton"></div></td></tr>
+          <tr class="tr-skeleton"><td colspan="5"><div class="row-skeleton"></div></td></tr>
+          <tr class="tr-skeleton"><td colspan="5"><div class="row-skeleton"></div></td></tr>
+          <tr class="tr-skeleton"><td colspan="5"><div class="row-skeleton"></div></td></tr>
+          <tr class="tr-skeleton"><td colspan="5"><div class="row-skeleton"></div></td></tr>
         </tbody>
       </table>
     </div>
@@ -560,5 +497,120 @@
 </div>
 
 
+
+<script>
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoIPV-GZNYAbTGup18pfll3p02y2YUgs-zSad8ausHDMcU3IkGz2ygQTp6hyBZXMI/exec";
+
+const INITIATIVES = {
+  "①": {
+    title: "하이브리드 캐주얼 게임 퍼블리싱",
+    dri: "최치웅 본부장",
+    goal: "2028년까지 60개 개발사, 90개 게임 출시, 1,048억원 매출 목표로, 한국, 베트남 등에서 사업을 전개함",
+    q4goals: ["사업구조, 경쟁우위 확인", "(4Q) Plan A팀 확정(트리플라)", "(4Q) Plan B팀 리더 탐색"]
+  },
+  "②": {
+    title: "인도 프리미엄 광고 생태계 구축",
+    dri: "권승현 본부장",
+    goal: "2028년까지 연간 10억원 광고 매출 창출이 가능한 매체 20개를 확보하여 320억원 매출을 목표로 함",
+    q4goals: ["(4Q) 인도법인 사전 조사", "(4Q) 광고주향 시장 조사", "(4Q) 영업조직 세팅 준비"]
+  },
+  "③": {
+    title: "자체 DSP 구축",
+    dri: "김창주 본부장",
+    goal: "2026년 상반기까지 DSP 버전 1을 개발 및 런칭하고, 2027년 외부 Ad Exchange를 연결, 2028년 본격적으로 DSP를 확장해 50억 원 매출을 목표로 함",
+    q4goals: ["(TBU)"]
+  },
+};
+
+function statusClass(s) {
+  if (!s || s === "TBU") return "tbu";
+  if (s === "ON TRACK")  return "on-track";
+  if (s === "AT RISK")   return "at-risk";
+  if (s === "COMPLETED") return "completed";
+  return "tbu";
+}
+
+function fmt(v) {
+  if (v === null || v === undefined || v === "" || v === "TBU") return "—";
+  const n = Number(v);
+  if (isNaN(n)) return v;
+  return n.toLocaleString("ko-KR");
+}
+
+async function loadData() {
+  try {
+    const res = await fetch(APPS_SCRIPT_URL);
+    const data = await res.json();
+    document.getElementById("pulse").className = "pulse live";
+    document.getElementById("status-text").textContent = "● LIVE · 마지막 업데이트: " + data.lastUpdated;
+    renderKpi(data.kpi);
+    renderRevenue(data.revenue);
+  } catch(err) {
+    document.getElementById("pulse").className = "pulse error";
+    document.getElementById("status-text").textContent = "⚠ 데이터 로드 실패: " + err.message;
+  }
+}
+
+function renderKpi(kpiRows) {
+  const groups = {};
+  for (const row of kpiRows) {
+    if (!groups[row.initiative]) groups[row.initiative] = [];
+    groups[row.initiative].push(row);
+  }
+  const grid = document.getElementById("initiative-grid");
+  grid.innerHTML = "";
+  for (const [num, meta] of Object.entries(INITIATIVES)) {
+    const rows = groups[num] || [];
+    const kpiHtml = rows.length
+      ? rows.map(r => `
+          <div class="kpi-item">
+            <span class="kpi-name">${r.name}${r.current && r.current !== "TBU" ? `<span class="kpi-val"> ${r.current}${r.target && r.target !== "TBU" ? " / " + r.target : ""}</span>` : ""}</span>
+            <span class="kpi-status ${statusClass(r.status)}">${r.status || "TBU"}</span>
+          </div>`).join("")
+      : `<div style="font-size:11px;color:var(--text-muted)">(TBU)</div>`;
+
+    const q4Html = meta.q4goals.map(g => `<li>${g}</li>`).join("");
+    grid.innerHTML += `
+      <div class="init-card">
+        <div class="init-num-label">${num} ${meta.title}</div>
+        <div class="init-section-label">DRI:</div>
+        <div class="init-section-body">${meta.dri}</div>
+        <div class="init-section-label">최종 목표:</div>
+        <div class="init-section-body">${meta.goal}</div>
+        <div class="init-section-label">2025년 4Q 목표:</div>
+        <ul class="init-list">${q4Html}</ul>
+        <div class="init-section-label">진행 상황: <span class="tbu-text">(TBU)</span></div>
+        <div class="init-section-label">핵심 지표 모니터링:</div>
+        <div class="kpi-list">${kpiHtml}</div>
+        <div class="init-section-label">리스크 요약: <span class="tbu-text">(TBU)</span></div>
+        <div class="init-section-label">대응 방안: <span class="tbu-text">(TBU)</span></div>
+        <div class="init-section-label">관련 문서: <span class="tbu-text">(TBU)</span></div>
+      </div>`;
+  }
+}
+
+function renderRevenue(rows) {
+  const tbody = document.getElementById("revenue-tbody");
+  tbody.innerHTML = "";
+  const total = rows.find(r => r.label.includes("전체") || r.label.includes("합계"));
+  if (total?.y2028) {
+    document.getElementById("target-rev").textContent = fmt(total.y2028) + "억 원";
+  }
+  for (const row of rows) {
+    const isTotal = row.label.includes("전체") || row.label.includes("합계");
+    tbody.innerHTML += `
+      <tr class="${isTotal ? "tr-total" : ""}">
+        <td><strong>${row.label}</strong></td>
+        <td>${fmt(row.y2025)}</td>
+        <td>${fmt(row.y2026)}</td>
+        <td>${fmt(row.y2027)}</td>
+        <td class="${isTotal ? "td-accent" : ""}">${fmt(row.y2028)}</td>
+      </tr>`;
+  }
+}
+
+loadData();
+setInterval(loadData, 5 * 60 * 1000);
+</script>
 </body>
 </html>
