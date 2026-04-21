@@ -349,6 +349,30 @@ td a:hover { text-decoration:underline; }
   <div id="mon-groups">
     <div style="text-align:center; padding:40px; color:var(--text-muted); font-size:13px;">데이터 불러오는 중...</div>
   </div>
+
+  <!-- KPI Detail -->
+  <div style="margin-top:32px;">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px; padding-bottom:10px; border-bottom:2px solid var(--border);">
+      <div style="background:var(--accent); color:white; font-family:'Courier New',monospace; font-size:11px; font-weight:700; padding:3px 9px; letter-spacing:.08em;">KPI</div>
+      <div style="font-size:15px; font-weight:800;">이니셔티브별 핵심 지표</div>
+      <small style="color:var(--text-muted); font-family:'Courier New',monospace; font-size:11px; margin-left:4px;">KPI_Detail 시트 · 분기 업데이트</small>
+    </div>
+    <div id="mon-kpi-detail">
+      <div style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">데이터 불러오는 중...</div>
+    </div>
+  </div>
+
+  <!-- Milestones -->
+  <div style="margin-top:32px;">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px; padding-bottom:10px; border-bottom:2px solid var(--border);">
+      <div style="background:var(--accent); color:white; font-family:'Courier New',monospace; font-size:11px; font-weight:700; padding:3px 9px; letter-spacing:.08em;">MS</div>
+      <div style="font-size:15px; font-weight:800;">전략 마일스톤</div>
+      <small style="color:var(--text-muted); font-family:'Courier New',monospace; font-size:11px; margin-left:4px;">Milestones 시트 · 분기 업데이트</small>
+    </div>
+    <div id="mon-milestones">
+      <div style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">데이터 불러오는 중...</div>
+    </div>
+  </div>
 </div>
 
 <!-- 04. PMI & Integration -->
@@ -709,10 +733,10 @@ async function loadData() {
     document.getElementById("status-text").textContent = "● LIVE · 마지막 업데이트: " + data.lastUpdated;
     renderKpi(data.kpi);
     renderRevenue(data.revenue);
-    // 06. 사업 모니터링
+    // 03. 사업 모니터링
     if (data.revenueActual) renderMonitoring(data.revenueActual);
-    if (data.milestones) renderMonSummaryMilestones(data.milestones);
-    if (data.kpiDetail) renderMonSummaryKpi(data.kpiDetail);
+    if (data.kpiDetail) { renderKpiDetail(data.kpiDetail); renderMonSummaryKpi(data.kpiDetail); }
+    if (data.milestones) { renderMilestones(data.milestones); renderMonSummaryMilestones(data.milestones); }
   } catch(err) {
     document.getElementById("pulse").className = "pulse error";
     document.getElementById("status-text").textContent = "⚠ 데이터 로드 실패: " + err.message;
@@ -776,7 +800,124 @@ function renderRevenue(rows) {
   }
 }
 
-// ── 06. 사업 모니터링 렌더링 ──
+// ── 03. KPI Detail 렌더링 ──
+
+function kpiStatusClass(s) {
+  if (!s) return "tbu";
+  if (s === "완료") return "completed";
+  if (s === "ON TRACK" || s === "진행 중") return "on-track";
+  if (s === "AT RISK") return "at-risk";
+  if (s === "진행 예정") return "pending";
+  return "tbu";
+}
+
+function renderKpiDetail(kpis) {
+  const container = document.getElementById("mon-kpi-detail");
+  if (!kpis || kpis.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">KPI_Detail 데이터가 없습니다.</div>';
+    return;
+  }
+
+  // 이니셔티브별 그룹핑
+  const groups = {};
+  kpis.forEach(k => {
+    const key = k.initiative || "(미분류)";
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(k);
+  });
+
+  let html = "";
+  Object.entries(groups).forEach(([init, rows]) => {
+    html += `<div style="margin-bottom:20px;">
+      <div class="mon-dept-label">${init}</div>
+      <table class="mon-unit-table" style="width:100%">
+        <thead><tr>
+          <th>KPI 항목</th>
+          <th style="text-align:center">단위</th>
+          <th style="text-align:right">2026 Plan</th>
+          <th style="text-align:right">1Q</th>
+          <th style="text-align:right">2Q</th>
+          <th style="text-align:right">3Q</th>
+          <th style="text-align:right">4Q</th>
+          <th style="text-align:center">상태</th>
+        </tr></thead>
+        <tbody>`;
+    rows.forEach(k => {
+      const sc = kpiStatusClass(k.status);
+      const fv = v => (v !== null && v !== undefined && v !== "") ? v : "—";
+      html += `<tr>
+        <td>
+          <strong>${k.name || "—"}</strong>
+          ${k.note ? `<small>${k.note}</small>` : ""}
+        </td>
+        <td style="text-align:center;color:var(--text-muted)">${k.unit || "—"}</td>
+        <td style="text-align:right" class="mon-plan-val">${fv(k.plan)}</td>
+        <td style="text-align:right" class="mon-actual-val">${fv(k.q1)}</td>
+        <td style="text-align:right">${fv(k.q2)}</td>
+        <td style="text-align:right">${fv(k.q3)}</td>
+        <td style="text-align:right">${fv(k.q4)}</td>
+        <td style="text-align:center"><span class="badge ${sc}">${k.status || "—"}</span></td>
+      </tr>`;
+    });
+    html += `</tbody></table></div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+// ── 03. Milestones 렌더링 ──
+
+function renderMilestones(milestones) {
+  const container = document.getElementById("mon-milestones");
+  if (!milestones || milestones.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">Milestones 데이터가 없습니다.</div>';
+    return;
+  }
+
+  // 카테고리별 그룹핑
+  const groups = {};
+  milestones.forEach(m => {
+    const key = m.category || "(미분류)";
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(m);
+  });
+
+  let html = "";
+  Object.entries(groups).forEach(([cat, rows]) => {
+    html += `<div style="margin-bottom:20px;">
+      <div class="mon-dept-label">${cat}</div>
+      <table class="mon-unit-table" style="width:100%">
+        <thead><tr>
+          <th>마일스톤</th>
+          <th style="text-align:center;white-space:nowrap">목표 시점</th>
+          <th style="text-align:center">완료 여부</th>
+          <th style="text-align:center;white-space:nowrap">완료일</th>
+          <th>비고</th>
+        </tr></thead>
+        <tbody>`;
+    rows.forEach(m => {
+      const isY = String(m.completed).toUpperCase() === "Y";
+      const isProg = m.completed === "진행중" || m.completed === "진행 중";
+      const badge = isY
+        ? `<span class="badge completed">✓ 완료</span>`
+        : isProg
+        ? `<span class="badge on-track">진행 중</span>`
+        : `<span class="badge tbu">미완료</span>`;
+      html += `<tr style="${isY ? "opacity:0.55" : ""}">
+        <td><strong>${m.milestone || "—"}</strong></td>
+        <td style="text-align:center;white-space:nowrap;color:var(--text-muted)">${m.targetDate || "—"}</td>
+        <td style="text-align:center">${badge}</td>
+        <td style="text-align:center;white-space:nowrap;color:var(--text-muted)">${m.completedDate || "—"}</td>
+        <td><small>${m.note || "—"}</small></td>
+      </tr>`;
+    });
+    html += `</tbody></table></div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+// ── 03. 사업 모니터링 렌더링 ──
 
 function sumQuarterly(data) {
   if (!data || !data.quarterly) return 0;
