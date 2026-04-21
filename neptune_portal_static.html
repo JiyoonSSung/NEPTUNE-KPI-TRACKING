@@ -345,6 +345,11 @@ td a:hover { text-decoration:underline; }
     <div class="mon-chip"><div class="mon-chip-label">KPI on track</div><div class="mon-chip-val" id="mon-kpi-count">—</div><div class="mon-chip-sub" id="mon-kpi-sub">로딩 중</div></div>
   </div>
 
+  <!-- 이니셔티브별 매출 달성률 카드 -->
+  <div id="initiative-revenue" style="margin-bottom:24px;">
+    <div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">데이터 불러오는 중...</div>
+  </div>
+
   <!-- 그룹별 아코디언 (JS로 렌더링) -->
   <div id="mon-groups">
     <div style="text-align:center; padding:40px; color:var(--text-muted); font-size:13px;">데이터 불러오는 중...</div>
@@ -735,6 +740,7 @@ async function loadData() {
     renderRevenue(data.revenue);
     // 03. 사업 모니터링
     if (data.revenueActual) renderMonitoring(data.revenueActual);
+    if (data.initiativeRevenue) renderInitiativeRevenue(data.initiativeRevenue);
     if (data.kpiDetail) { renderKpiDetail(data.kpiDetail); renderMonSummaryKpi(data.kpiDetail); }
     if (data.milestones) { renderMilestones(data.milestones); renderMonSummaryMilestones(data.milestones); }
   } catch(err) {
@@ -798,6 +804,84 @@ function renderRevenue(rows) {
         <td class="${isTotal ? "td-accent" : ""}">${fmt(row.y2028)}</td>
       </tr>`;
   }
+}
+
+// ── 03. 이니셔티브별 매출 달성률 카드 ──
+
+function fmtB(v) {
+  if (!v && v !== 0) return "—";
+  return (Math.round(v / 100)).toLocaleString("ko-KR") + "억";
+}
+
+function renderInitiativeRevenue(items) {
+  const container = document.getElementById("initiative-revenue");
+  if (!items || items.length === 0) { container.innerHTML = ""; return; }
+
+  const colors = ["#E8530A", "#1A5FAD", "#1A7A4A"];
+  const subtexts = [
+    "트리플라HB + 넵튠HB 합산",
+    "4Q 런칭 계획 · 1Q Plan 없음",
+    "MBP 파일럿 2026 3Q 예정"
+  ];
+
+  let html = `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:8px;">`;
+
+  items.forEach((item, idx) => {
+    const color = colors[idx];
+    const forecastPct = item.plan_annual > 0
+      ? Math.round(item.forecast_annual / item.plan_annual * 100) : 0;
+    const q1Pct = item.plan_q1 > 0
+      ? Math.round(item.actual_q1 / item.plan_q1 * 100) : null;
+
+    const barColor = forecastPct >= 95 ? "var(--green)" : forecastPct >= 80 ? "#B8860B" : "var(--red)";
+    const pctBadgeCls = forecastPct >= 95 ? "pct-good" : forecastPct >= 80 ? "pct-warn" : forecastPct > 0 ? "pct-bad" : "pct-na";
+
+    html += `
+    <div style="background:var(--white);border:1px solid var(--border);border-top:3px solid ${color};padding:16px;">
+      <div style="font-size:11px;font-weight:700;color:${color};font-family:'Courier New',monospace;letter-spacing:.06em;margin-bottom:10px;">${item.initiative}</div>
+
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+        <div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:1px;">연간 목표</div>
+          <div style="font-size:20px;font-weight:800;color:var(--text);">${fmtB(item.plan_annual)}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:1px;">현재 전망</div>
+          <div style="font-size:16px;font-weight:700;color:var(--text-dim);">${fmtB(item.forecast_annual)}</div>
+        </div>
+      </div>
+
+      <div style="background:var(--border);border-radius:2px;height:6px;margin:10px 0 6px;">
+        <div style="background:${barColor};height:6px;border-radius:2px;width:${Math.min(forecastPct,100)}%;transition:width .4s;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <span style="font-size:11px;color:var(--text-muted);">목표 대비 전망</span>
+        <span class="mon-pct-sm ${pctBadgeCls}">${forecastPct > 0 ? forecastPct + "%" : "—"}</span>
+      </div>
+
+      <div style="border-top:1px solid var(--border);padding-top:10px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);font-family:'Courier New',monospace;letter-spacing:.06em;margin-bottom:6px;">1Q 실적</div>
+        <div style="display:flex;gap:12px;">
+          <div>
+            <div style="font-size:10px;color:var(--text-muted);">Plan</div>
+            <div style="font-size:13px;font-weight:600;">${fmtB(item.plan_q1)}</div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--text-muted);">Actual</div>
+            <div style="font-size:13px;font-weight:700;color:${item.actual_q1 > 0 ? "var(--green)" : "var(--text-dim)"};">${fmtB(item.actual_q1)}</div>
+          </div>
+          <div style="margin-left:auto;text-align:right;">
+            <div style="font-size:10px;color:var(--text-muted);">달성률</div>
+            <div style="font-size:13px;font-weight:700;">${q1Pct !== null ? q1Pct + "%" : "N/A"}</div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:8px;">${subtexts[idx]}</div>
+    </div>`;
+  });
+
+  html += `</div>`;
+  container.innerHTML = html;
 }
 
 // ── 03. KPI Detail 렌더링 ──
