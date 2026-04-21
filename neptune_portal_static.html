@@ -175,6 +175,7 @@ td a:hover { text-decoration:underline; }
 </head>
 <body>
 <!-- 헤더 -->
+<div id="debug-bar" style="padding:6px 32px;font-size:11px;font-family:'Courier New',monospace;color:white;background:#1A7A4A;display:block;">✅ v5 · 2026-04-21 · URL: AKfycbw3... (새 배포)</div>
 <div class="header">
   <div class="header-badge">CO-028</div>
   <div class="header-title">넵튠 투자 관리 포털</div>
@@ -186,7 +187,6 @@ td a:hover { text-decoration:underline; }
   <a onclick="showTab('all')" id="tab-all" class="active">전체</a>
   <a onclick="showTab('meetings')" id="tab-meetings">넵튠 관련 회의체</a>
   <a onclick="showTab('initiatives')" id="tab-initiatives">Strategic Initiatives</a>
-  <a onclick="showTab('monitoring')" id="tab-monitoring">사업 모니터링</a>
   <a onclick="showTab('pmi')" id="tab-pmi">PMI & Integration</a>
   <a onclick="showTab('agenda')" id="tab-agenda">중요 아젠다</a>
   <a onclick="showTab('intel')" id="tab-intel">시장 및 경쟁 인텔리전스</a>
@@ -201,7 +201,7 @@ td a:hover { text-decoration:underline; }
     <div class="chip">관리: <strong>Chairman's Office (성지윤, 조하은)</strong></div>
     <div class="chip">크래프톤 지분: <strong>45%</strong></div>
     <div class="chip">투자 가설: <strong>Mini AppLovin</strong></div>
-    <div class="chip">2028 목표: <strong id="target-rev">로딩 중...</strong></div>
+    <div class="chip">2028 목표: <strong>총 매출 3,718억 원</strong></div>
   </div>
 </div>
 
@@ -290,7 +290,7 @@ td a:hover { text-decoration:underline; }
   </div>
 </div>
 
-<!-- 02. Strategic Initiatives (LIVE) -->
+<!-- 02+03. Strategic Initiatives & 사업 모니터링 (통합) -->
 <div class="section" id="initiatives">
   <div class="section-header">
     <div class="section-num">02</div>
@@ -298,85 +298,37 @@ td a:hover { text-decoration:underline; }
   </div>
   <div class="info-box">
     <strong>투자 가설:</strong> '미니 앱러빈(Mini AppLovin)' 모델 — 게임과 애드테크가 결합된 통합 사업 모델 실행 중.<br>
-    <strong>2028 목표:</strong> 총 매출 3,638억 원 (신사업 매출 1,418억 원 포함) | <strong>모니터링:</strong> 분기 단위
+    <strong>데이터 소스:</strong> Google Sheets (B.2. KPI_Detail · B.3. Milestones · Revenue_Actual) · <strong>업데이트 주기:</strong> 분기 1회
   </div>
   <div class="status-bar">
     <div class="pulse" id="pulse"></div>
     <span id="status-text">Google Sheets에서 데이터 불러오는 중...</span>
     <span id="last-updated"></span>
   </div>
-  <div class="initiative-grid" id="initiative-grid">
-    <div class="init-card"><div class="kpi-skeleton" style="width:40%;height:18px;margin-bottom:10px"></div><div class="kpi-skeleton" style="width:85%;margin-bottom:6px"></div><div class="kpi-skeleton" style="width:65%"></div></div>
-    <div class="init-card"><div class="kpi-skeleton" style="width:40%;height:18px;margin-bottom:10px"></div><div class="kpi-skeleton" style="width:85%;margin-bottom:6px"></div><div class="kpi-skeleton" style="width:65%"></div></div>
-    <div class="init-card"><div class="kpi-skeleton" style="width:40%;height:18px;margin-bottom:10px"></div><div class="kpi-skeleton" style="width:85%;margin-bottom:6px"></div><div class="kpi-skeleton" style="width:65%"></div></div>
-  </div>
-  <div id="revenue-section" class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>구분 (억 원)</th><th>2025</th><th>2026</th><th>2027</th><th>2028</th></tr>
-      </thead>
-      <tbody id="revenue-tbody">
-        <tr class="tr-skeleton"><td colspan="5"><div class="row-skeleton"></div></td></tr>
-        <tr class="tr-skeleton"><td colspan="5"><div class="row-skeleton"></div></td></tr>
-        <tr class="tr-skeleton"><td colspan="5"><div class="row-skeleton"></div></td></tr>
-        <tr class="tr-skeleton"><td colspan="5"><div class="row-skeleton"></div></td></tr>
-        <tr class="tr-skeleton"><td colspan="5"><div class="row-skeleton"></div></td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
 
-<!-- 03. 사업 모니터링 -->
-<div class="section" id="monitoring">
-  <div class="section-header">
-    <div class="section-num">03</div>
-    <div class="section-title">사업 모니터링 <span class="section-title-en">Plan vs Actual · Live</span></div>
-  </div>
-  <div class="info-box">
-    넵튠 2026년 3대 전략 이니셔티브 진행 현황을 모니터링함.<br>
-    <strong>데이터 소스:</strong> Google Sheets (B.2. KPI_Detail · B.3. Milestones · Revenue_Actual) · <strong>업데이트 주기:</strong> 분기 1회
+  <!-- 이니셔티브 통합 카드 3개 -->
+  <div id="initiative-cards" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;">
+    <div class="init-card"><div class="kpi-skeleton" style="width:40%;height:16px;margin-bottom:10px"></div><div class="kpi-skeleton" style="margin-bottom:6px"></div><div class="kpi-skeleton" style="width:70%"></div></div>
+    <div class="init-card"><div class="kpi-skeleton" style="width:40%;height:16px;margin-bottom:10px"></div><div class="kpi-skeleton" style="margin-bottom:6px"></div><div class="kpi-skeleton" style="width:70%"></div></div>
+    <div class="init-card"><div class="kpi-skeleton" style="width:40%;height:16px;margin-bottom:10px"></div><div class="kpi-skeleton" style="margin-bottom:6px"></div><div class="kpi-skeleton" style="width:70%"></div></div>
   </div>
 
-  <!-- 상단 요약 칩 -->
-  <div class="mon-summary" id="mon-summary">
-    <div class="mon-chip"><div class="mon-chip-label">마일스톤 완료</div><div class="mon-chip-val" id="mon-ms-count">—</div><div class="mon-chip-sub" id="mon-ms-sub">로딩 중</div></div>
-    <div class="mon-chip"><div class="mon-chip-label">KPI on track</div><div class="mon-chip-val" id="mon-kpi-count">—</div><div class="mon-chip-sub" id="mon-kpi-sub">로딩 중</div></div>
-  </div>
-
-  <!-- 이니셔티브별 매출 달성률 카드 -->
-  <div id="initiative-revenue" style="margin-bottom:24px;">
-    <div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">데이터 불러오는 중...</div>
-  </div>
-
-  <!-- 그룹별 아코디언 (JS로 렌더링) -->
-  <div id="mon-groups">
-    <div style="text-align:center; padding:40px; color:var(--text-muted); font-size:13px;">데이터 불러오는 중...</div>
-  </div>
-
-  <!-- KPI Detail -->
-  <div style="margin-top:32px;">
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px; padding-bottom:10px; border-bottom:2px solid var(--border);">
-      <div style="background:var(--accent); color:white; font-family:'Courier New',monospace; font-size:11px; font-weight:700; padding:3px 9px; letter-spacing:.08em;">KPI</div>
-      <div style="font-size:15px; font-weight:800;">이니셔티브별 핵심 지표</div>
-      <small style="color:var(--text-muted); font-family:'Courier New',monospace; font-size:11px; margin-left:4px;">KPI_Detail 시트 · 분기 업데이트</small>
+  <!-- 전체 마일스톤 상세 (접기/펼치기) -->
+  <div id="ms-accordion" style="margin-top:8px;">
+    <div onclick="toggleMsDetail()" style="background:var(--grey-bg);border:1px solid var(--border);padding:10px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;">
+      <span style="font-size:13px;font-weight:600;color:var(--text-dim);">전체 마일스톤 상세 보기</span>
+      <span id="ms-arrow" style="font-size:11px;color:var(--text-muted);transition:transform .2s;display:inline-block;">▶</span>
     </div>
-    <div id="mon-kpi-detail">
-      <div style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">데이터 불러오는 중...</div>
-    </div>
-  </div>
-
-  <!-- Milestones -->
-  <div style="margin-top:32px;">
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px; padding-bottom:10px; border-bottom:2px solid var(--border);">
-      <div style="background:var(--accent); color:white; font-family:'Courier New',monospace; font-size:11px; font-weight:700; padding:3px 9px; letter-spacing:.08em;">MS</div>
-      <div style="font-size:15px; font-weight:800;">전략 마일스톤</div>
-      <small style="color:var(--text-muted); font-family:'Courier New',monospace; font-size:11px; margin-left:4px;">Milestones 시트 · 분기 업데이트</small>
-    </div>
-    <div id="mon-milestones">
-      <div style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">데이터 불러오는 중...</div>
+    <div id="ms-detail-wrap" style="max-height:0;overflow:hidden;transition:max-height .3s ease;">
+      <div id="mon-milestones" style="padding:16px 0;">
+        <div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">데이터 불러오는 중...</div>
+      </div>
     </div>
   </div>
 </div>
+
+<!-- 03 더미 (탭 호환용 — 숨김) -->
+<div class="section" id="monitoring" style="display:none!important"></div>
 
 <!-- 04. PMI & Integration -->
 <div class="section" id="pmi">
@@ -472,28 +424,23 @@ td a:hover { text-decoration:underline; }
     <div class="section-num">05</div>
     <div class="section-title">중요 아젠다</div>
   </div>
+
   <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
     <div style="width:4px; height:20px; background:var(--accent); flex-shrink:0;"></div>
-    <div style="font-size:15px; font-weight:700;">넵튠 경영진(핵심인력) 보상안 설계 진행 현황</div>
+    <div style="font-size:15px; font-weight:700;">넵튠 경영진(핵심인력) 보상안 설계</div>
     <span class="badge completed" style="margin-left:8px;">COMPLETED</span>
   </div>
   <div style="background:var(--white); border:1px solid var(--border); padding:14px 18px; margin-bottom:16px; font-size:14px; color:var(--text-dim); line-height:1.7;">
     넵튠의 3개 Strategic Initiatives를 Conservative/Target/Aggressive 수준별로 달성 시 기업가치 변동(DCF 모델 기반)에 상응하는 일정 %를 보상으로 지급하는 프레임으로 설계 완료. 크래프톤 HR 조언 하에 설계, 넵튠 강율빈 대표와 합의 완료, 크래프톤 이사회에 공유 완료(승인 사항 아님).
   </div>
   <details style="margin-bottom:20px;">
-    <summary style="cursor:pointer; font-size:13px; font-weight:600; color:var(--text-muted); padding:8px 0; user-select:none;">보상안 설계 진행 히스토리 펼치기</summary>
+    <summary style="cursor:pointer; font-size:13px; font-weight:600; color:var(--text-muted); padding:8px 0; user-select:none;">진행 히스토리 펼치기</summary>
     <div class="table-wrap" style="margin-top:8px;">
       <table>
         <thead>
           <tr><th>주요 이벤트</th><th>날짜</th><th>상세 설명</th><th>관련 문서</th></tr>
         </thead>
         <tbody>
-          <tr>
-            <td><strong>(참고) 딜 체결 이전, 넵튠 경영진 보상안 관련 히스토리</strong></td>
-            <td>—</td>
-            <td>—</td>
-            <td>넵튠 보상안 관련 논의 히스토리</td>
-          </tr>
           <tr>
             <td><strong>의장님이 격주회의에서 넵튠 경영진 보상안 진행 현황 문의</strong></td>
             <td>2025년 7월 16일</td>
@@ -503,26 +450,32 @@ td a:hover { text-decoration:underline; }
           <tr>
             <td><strong>조하은님이 보상안 관련 히스토리 정리하여 의장님께 전달</strong></td>
             <td>2025년 7월 28일</td>
-            <td>크래프톤이 카카오게임즈와의 협상 과정에서 넵튠의 두 각자 대표와 논의한 보상안 관련 내용을 정리함. 당시 개략적인 방향성과 일부 조건에 대해 합의했으며, 세부 조건은 추후 구체화하기로 했음. 이에 따라 현재까지 넵튠 대표와 논의/합의된 내용을 정리하여 전달함</td>
+            <td>크래프톤이 카카오게임즈와의 협상 과정에서 넵튠의 두 각자 대표와 논의한 보상안 관련 내용을 정리함. 당시 개략적인 방향성과 일부 조건에 대해 합의했으며, 세부 조건은 추후 구체화하기로 했음.</td>
             <td>—</td>
           </tr>
           <tr>
-            <td><strong>의장님 포함 크래프톤 HR, 의장실 1차 미팅 진행</strong></td>
+            <td><strong>의장님 포함 크래프톤 HR, 의장실 1차 미팅</strong></td>
             <td>2025년 9월 15일</td>
-            <td>보상안은 과거 합의에 단순 의존하지 말고, 현 시점에서 크래프톤과의 전략적 정합성 관점에서 검토해야 함. 복잡한 KPI는 지표 최적화에 집착하게 만들어 전체 기업 가치와 괴리될 수 있으므로, 단순하고 기업가치와 직결되는 방식으로 설계 필요. HR은 Expected Value와 외부 벤치마크를 제시하여 합리적 보상안을 마련해야 함</td>
+            <td>보상안은 과거 합의에 단순 의존하지 말고 현 시점 전략적 정합성 관점에서 검토해야 함. 단순하고 기업가치와 직결되는 방식으로 설계 필요.</td>
             <td>액세스 요청 필요</td>
           </tr>
           <tr>
-            <td><strong>의장님 포함 크래프톤 HR, 의장실 2차 미팅 진행</strong></td>
+            <td><strong>의장님 포함 크래프톤 HR, 의장실 2차 미팅</strong></td>
             <td>2025년 10월 1일</td>
-            <td>크래프톤 본부장 보상 수준과의 형평성 검토 필요하며, 강율빈 대표 보상안도 핵심인재 보상 규모에 맞춰 함께 고려되어야 함. 넵튠 경영진 인센티브는 애드테크(미니 앱로빈) 사업의 목표와 성과에 직접 연동되어야 하며, 크래프톤 주가 연동은 상관관계가 불명확하여 주된 보상으로 부적절함. 강율빈 대표가 구상 중인 넵튠의 사업 로드맵 및 재무 시뮬레이션에 맞춰 보상안을 설계해야 함</td>
+            <td>넵튠 경영진 인센티브는 애드테크(미니 앱로빈) 사업 목표와 성과에 직접 연동. 강율빈 대표의 넵튠 사업 로드맵 및 재무 시뮬레이션에 맞춰 설계해야 함.</td>
             <td>액세스 요청 필요</td>
           </tr>
           <tr>
-            <td><strong>크래프톤 HR, 의장실 미팅 진행</strong></td>
+            <td><strong>크래프톤 HR, 의장실 미팅</strong></td>
             <td>2025년 10월 31일</td>
-            <td>조하은님이 넵튠의 사업 로드맵 실적 전망 안을 크래프톤 HR에 전달함. 크래프톤 HR에서 사업 로드맵에 기반한 넵튠 경영진 및 핵심 인력 대상 보상 패키지를 설계 중임</td>
+            <td>크래프톤 HR에서 사업 로드맵에 기반한 넵튠 경영진 및 핵심 인력 대상 보상 패키지 설계 중.</td>
             <td>넵튠 사업로드맵 관련 Financials_vFin_크래프톤 HR 전달 버전.xlsx</td>
+          </tr>
+          <tr>
+            <td><strong>보상안 설계 완료 및 합의</strong></td>
+            <td>2026년 1Q</td>
+            <td>Conservative/Target/Aggressive 달성 시 DCF 기반 기업가치 상승분의 일정 %를 보상으로 지급하는 프레임으로 설계 완료. 넵튠 강율빈 대표와 합의, 크래프톤 이사회 공유 완료(승인 사항 아님).</td>
+            <td>액세스 요청 필요</td>
           </tr>
         </tbody>
       </table>
@@ -538,7 +491,7 @@ td a:hover { text-decoration:underline; }
   </div>
   <div class="info-box">
     넵튠 사업 관련 외부 환경 변화와 경쟁사 동향을 체계적으로 수집·분석하여 전략적 시사점을 도출함. 특히 <strong>게임+애드테크 결합 사업 모델(Mini AppLovin 전략)</strong>의 구조적 유효성을 지속 검증하는 데 초점을 맞춤.<br>
-    업계 전문가 네트워킹·뉴스/DB 플랫폼 등 다채널로 <strong>일 단위 수집</strong>. &nbsp;|&nbsp; <strong>최종 업데이트: 2026년 3월 27일</strong>
+    업계 전문가 네트워킹·뉴스/DB 플랫폼 등 다채널로 수집. &nbsp;|&nbsp; <strong>업데이트 주기: 주 단위</strong> &nbsp;|&nbsp; <strong>최종 업데이트: 2026년 3월 27일</strong>
   </div>
 
   <!-- CARD 1: AppLovin BREAKING -->
@@ -692,27 +645,47 @@ td a:hover { text-decoration:underline; }
 </div>
 
 <script>
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzP1FKC4l7R7pZbSegs-bB2BlB3KWEAn0KjsGpr115f3lgMo2Ffh7w4Gr1FpaeiWZkT/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3Rt-KVofZD-biJADTEz_j4p7NlOY_CSDlPl-RPe6IJQ6ZEOqzpLdLgdGk-bfYUi69/exec";
+
+// ── 디버그 패널 (데이터 수신 상태 확인) ──
+function setDebug(msg, color) {
+  let el = document.getElementById("debug-bar");
+  if (!el) return;
+  el.style.background = color || "#333";
+  el.textContent = msg;
+}
+
 const INITIATIVES = {
   "①": {
     title: "하이브리드 캐주얼 게임 퍼블리싱",
-    dri: "최치웅 본부장",
+    dri: "권승현 본부장",
     goal: "2028년까지 60개 개발사, 90개 게임 출시, 1,048억원 매출 목표로, 한국, 베트남 등에서 사업을 전개함",
     q4goals: ["사업구조, 경쟁우위 확인", "(4Q) Plan A팀 확정(트리플라)", "(4Q) Plan B팀 리더 탐색"]
   },
   "②": {
     title: "인도 프리미엄 광고 생태계 구축",
-    dri: "권승현 본부장",
+    dri: "김창주 본부장",
     goal: "2028년까지 연간 10억원 광고 매출 창출이 가능한 매체 20개를 확보하여 320억원 매출을 목표로 함",
     q4goals: ["(4Q) 인도법인 사전 조사", "(4Q) 광고주향 시장 조사", "(4Q) 영업조직 세팅 준비"]
   },
   "③": {
     title: "자체 DSP 구축",
-    dri: "김창주 본부장",
+    dri: "최치웅 본부장",
     goal: "2026년 상반기까지 DSP 버전 1을 개발 및 런칭하고, 2027년 외부 Ad Exchange를 연결, 2028년 본격적으로 DSP를 확장해 50억 원 매출을 목표로 함",
     q4goals: ["(TBU)"]
   },
 };
+
+const INITIATIVE_META = {
+  "①": { title: "하이브리드캐주얼 게임 퍼블리싱", dri: "권승현 본부장", color: "#E8530A" },
+  "②": { title: "인도 프리미엄 광고 생태계 구축", dri: "김창주 본부장", color: "#1A5FAD" },
+  "③": { title: "자체 DSP 구축",                  dri: "최치웅 본부장", color: "#1A7A4A" }
+};
+
+function fmtB(v) {
+  if (!v && v !== 0) return "—";
+  return Math.round(v / 100).toLocaleString("ko-KR") + "억";
+}
 
 function statusClass(s) {
   if (!s || s === "TBU") return "tbu";
@@ -729,157 +702,168 @@ function fmt(v) {
 }
 
 async function loadData() {
+  setDebug("⏳ 데이터 불러오는 중...", "#555");
   try {
     const res = await fetch(APPS_SCRIPT_URL);
+    if (!res.ok) throw new Error("HTTP " + res.status);
     const data = await res.json();
-    document.getElementById("pulse").className = "pulse live";
-    document.getElementById("status-text").textContent = "● LIVE · 마지막 업데이트: " + data.lastUpdated;
-    // Section 02: kpiDetail로 이니셔티브 카드 업데이트
-    if (data.kpiDetail && data.kpiDetail.length > 0) renderKpi(data.kpiDetail);
-    // Section 02: revenue 테이블 숨김 처리
-    document.getElementById("revenue-section").style.display = "none";
-    // Section 03: 모니터링
-    if (data.initiativeRevenue) renderInitiativeRevenue(data.initiativeRevenue);
-    if (data.kpiDetail) { renderKpiDetail(data.kpiDetail); renderMonSummaryKpi(data.kpiDetail); }
-    if (data.milestones) { renderMilestones(data.milestones); renderMonSummaryMilestones(data.milestones); }
-    // mon-groups 숨김 (revenueActual 미사용)
-    document.getElementById("mon-groups").style.display = "none";
+
+    const pulse = document.getElementById("pulse");
+    const statusText = document.getElementById("status-text");
+    if (pulse) pulse.className = "pulse live";
+    if (statusText) statusText.textContent = "● LIVE · 마지막 업데이트: " + data.lastUpdated;
+
+    setDebug(
+      "✅ 데이터 수신: kpiDetail=" + (data.kpiDetail||[]).length +
+      "개, milestones=" + (data.milestones||[]).length +
+      "개, initiativeRevenue=" + (data.initiativeRevenue||[]).length + "개",
+      "#1A7A4A"
+    );
+
+    // 통합 이니셔티브 카드 렌더
+    if (data.kpiDetail && data.initiativeRevenue && data.milestones) {
+      renderInitiativeCards(data.initiativeRevenue, data.kpiDetail, data.milestones);
+    }
+
+    // 마일스톤 상세 테이블
+    if (data.milestones) renderMilestones(data.milestones);
+
   } catch(err) {
-    document.getElementById("pulse").className = "pulse error";
-    document.getElementById("status-text").textContent = "⚠ 데이터 로드 실패: " + err.message;
+    const pulse = document.getElementById("pulse");
+    const statusText = document.getElementById("status-text");
+    if (pulse) pulse.className = "pulse error";
+    if (statusText) statusText.textContent = "⚠ 데이터 로드 실패: " + err.message;
+    setDebug("❌ 에러: " + err.message, "#C0392B");
   }
 }
 
-function renderKpi(kpiRows) {
-  // kpiDetail 구조: {initiative, name, unit, plan, q1, status, note}
-  const groups = {};
-  for (const row of kpiRows) {
-    const key = row.initiative ? row.initiative.substring(0,1) : "";
-    const num = ["①","②","③"].find(n => row.initiative && row.initiative.includes(n)) || key;
-    if (!groups[num]) groups[num] = [];
-    groups[num].push(row);
-  }
-  const grid = document.getElementById("initiative-grid");
-  grid.innerHTML = "";
-  for (const [num, meta] of Object.entries(INITIATIVES)) {
-    const rows = groups[num] || [];
-    const kpiHtml = rows.length
-      ? rows.map(r => `
-        <div class="kpi-item">
-          <span class="kpi-name">${r.name}${r.plan ? `<span class="kpi-val"> Plan ${r.plan}${r.q1 !== null && r.q1 !== undefined ? " · 1Q " + r.q1 : ""}</span>` : ""}</span>
-          <span class="kpi-status ${kpiStatusClass(r.status)}">${r.status || "—"}</span>
-        </div>`).join("")
-      : `<div style="font-size:11px;color:var(--text-muted)">(데이터 없음)</div>`;
-    grid.innerHTML += `
-      <div class="init-card">
-        <div class="init-num-label">${num} ${meta.title}</div>
-        <div class="init-section-label">DRI:</div>
-        <div class="init-section-body">${meta.dri}</div>
-        <div class="init-section-label">최종 목표:</div>
-        <div class="init-section-body">${meta.goal}</div>
-        <div class="init-section-label">핵심 KPI (2026):</div>
-        <div class="kpi-list">${kpiHtml}</div>
-      </div>`;
-  }
-}
-
-function renderRevenue(rows) {
-  const tbody = document.getElementById("revenue-tbody");
-  tbody.innerHTML = "";
-  const total = rows.find(r => r.label.includes("전체") || r.label.includes("합계"));
-  if (total?.y2028) {
-    document.getElementById("target-rev").textContent = fmt(total.y2028) + "억 원";
-  }
-  for (const row of rows) {
-    const isTotal = row.label.includes("전체") || row.label.includes("합계");
-    tbody.innerHTML += `
-      <tr class="${isTotal ? "tr-total" : ""}">
-        <td><strong>${row.label}</strong></td>
-        <td>${fmt(row.y2025)}</td>
-        <td>${fmt(row.y2026)}</td>
-        <td>${fmt(row.y2027)}</td>
-        <td class="${isTotal ? "td-accent" : ""}">${fmt(row.y2028)}</td>
-      </tr>`;
-  }
-}
-
-// ── 03. 이니셔티브별 매출 달성률 카드 ──
-
-function fmtB(v) {
-  if (!v && v !== 0) return "—";
-  return (Math.round(v / 100)).toLocaleString("ko-KR") + "억";
-}
-
-function renderInitiativeRevenue(items) {
-  const container = document.getElementById("initiative-revenue");
-  if (!items || items.length === 0) { container.innerHTML = ""; return; }
-
-  const colors = ["#E8530A", "#1A5FAD", "#1A7A4A"];
-  const subtexts = [
-    "1Q 실적: HB1(넵튠) 기준 · HB2(트리플라)는 4월 합병 후 별도 집계 예정",
-    "넵튠 인도 법인 매출 · 4Q 런칭 계획",
-    "기술전략본부 DSP · MBP 파일럿 2026 3Q 예정"
-  ];
-
-  let html = `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:8px;">`;
-
-  items.forEach((item, idx) => {
-    const color = colors[idx];
-    const forecastPct = item.plan_annual > 0
-      ? Math.round(item.forecast_annual / item.plan_annual * 100) : 0;
-    const q1Pct = item.plan_q1 > 0
-      ? Math.round(item.actual_q1 / item.plan_q1 * 100) : null;
-
-    const barColor = forecastPct >= 95 ? "var(--green)" : forecastPct >= 80 ? "#B8860B" : "var(--red)";
-    const pctBadgeCls = forecastPct >= 95 ? "pct-good" : forecastPct >= 80 ? "pct-warn" : forecastPct > 0 ? "pct-bad" : "pct-na";
-
-    html += `
-    <div style="background:var(--white);border:1px solid var(--border);border-top:3px solid ${color};padding:16px;">
-      <div style="font-size:11px;font-weight:700;color:${color};font-family:'Courier New',monospace;letter-spacing:.06em;margin-bottom:10px;">${item.initiative}</div>
-
-      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
-        <div>
-          <div style="font-size:11px;color:var(--text-muted);margin-bottom:1px;">연간 목표</div>
-          <div style="font-size:20px;font-weight:800;color:var(--text);">${fmtB(item.plan_annual)}</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:11px;color:var(--text-muted);margin-bottom:1px;">현재 전망</div>
-          <div style="font-size:16px;font-weight:700;color:var(--text-dim);">${fmtB(item.forecast_annual)}</div>
-        </div>
-      </div>
-
-      <div style="background:var(--border);border-radius:2px;height:6px;margin:10px 0 6px;">
-        <div style="background:${barColor};height:6px;border-radius:2px;width:${Math.min(forecastPct,100)}%;transition:width .4s;"></div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <span style="font-size:11px;color:var(--text-muted);">목표 대비 전망</span>
-        <span class="mon-pct-sm ${pctBadgeCls}">${forecastPct > 0 ? forecastPct + "%" : "—"}</span>
-      </div>
-
-      <div style="border-top:1px solid var(--border);padding-top:10px;">
-        <div style="font-size:10px;font-weight:700;color:var(--text-muted);font-family:'Courier New',monospace;letter-spacing:.06em;margin-bottom:6px;">1Q 실적</div>
-        <div style="display:flex;gap:12px;">
-          <div>
-            <div style="font-size:10px;color:var(--text-muted);">Plan</div>
-            <div style="font-size:13px;font-weight:600;">${fmtB(item.plan_q1)}</div>
-          </div>
-          <div>
-            <div style="font-size:10px;color:var(--text-muted);">Actual</div>
-            <div style="font-size:13px;font-weight:700;color:${item.actual_q1 > 0 ? "var(--green)" : "var(--text-dim)"};">${fmtB(item.actual_q1)}</div>
-          </div>
-          <div style="margin-left:auto;text-align:right;">
-            <div style="font-size:10px;color:var(--text-muted);">달성률</div>
-            <div style="font-size:13px;font-weight:700;">${q1Pct !== null ? q1Pct + "%" : "N/A"}</div>
-          </div>
-        </div>
-      </div>
-      <div style="font-size:10px;color:var(--text-muted);margin-top:8px;">${subtexts[idx]}</div>
-    </div>`;
+function renderInitiativeCards(revenues, kpis, milestones) {
+  const container = document.getElementById("initiative-cards");
+  if (!container) return;
+  const kpiGroups = {};
+  (kpis || []).forEach(k => {
+    const num = ["①","②","③"].find(n => k.initiative && k.initiative.includes(n));
+    if (!num) return;
+    if (!kpiGroups[num]) kpiGroups[num] = [];
+    kpiGroups[num].push(k);
   });
 
-  html += `</div>`;
+  // 마일스톤 그룹핑 (이니셔티브별)
+  const msGroups = {"①":[],"②":[],"③":[]};
+  (milestones || []).forEach(m => {
+    const num = m.category === "하이브리드캐주얼" ? "①" : m.category === "인도 진출" ? "②" : m.category === "DSP" ? "③" : null;
+    if (num) msGroups[num].push(m);
+  });
+
+  // Revenue 매핑
+  const revMap = {};
+  (revenues || []).forEach(r => {
+    const num = ["①","②","③"].find(n => r.initiative && r.initiative.includes(n));
+    if (num) revMap[num] = r;
+  });
+
+  // 카드를 같은 높이로 맞추기 위해 grid에 align-items:stretch 적용
+  container.style.alignItems = "stretch";
+
+  let html = "";
+  for (const num of ["①","②","③"]) {
+    const meta = INITIATIVE_META[num];
+    const rev = revMap[num] || {};
+    const kpiList = kpiGroups[num] || [];
+    const msList = msGroups[num] || [];
+    const color = meta.color;
+
+    const planAnnual = rev.plan_annual || 0;
+    const planQ1 = rev.plan_q1 || 0;
+    const actualQ1 = rev.actual_q1 || 0;
+    const q1Pct = planQ1 > 0 ? Math.round(actualQ1 / planQ1 * 100) : null;
+    const pctColor = q1Pct === null ? "var(--text-muted)" : q1Pct >= 90 ? "var(--green)" : q1Pct >= 60 ? "#B8860B" : "var(--red)";
+    const barW = planQ1 > 0 ? Math.min(Math.round(actualQ1 / planQ1 * 100), 100) : 0;
+    const msDone = msList.filter(m => String(m.completed).toUpperCase() === "Y").length;
+    const msTotal = msList.length;
+
+    // KPI: 전체 표시 (상태형은 뱃지, 수치형은 Plan/1Q 값)
+    const kpiDisplay = kpiList;
+
+    // 마일스톤 아이템
+    const msHtml = msList.map(m => {
+      const done = String(m.completed).toUpperCase() === "Y";
+      const dotColor = done ? "var(--green)" : "var(--text-muted)";
+      const badgeCls = done ? "completed" : m.completed === "진행중" ? "on-track" : "tbu";
+      const badgeText = done ? "완료" : m.completed || m.targetDate;
+      return `<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;">
+        <span style="color:${dotColor};font-size:9px;margin-top:3px;flex-shrink:0;">●</span>
+        <span style="font-size:12px;color:var(--text-dim);flex:1;line-height:1.5;">${m.milestone}</span>
+        <span class="badge ${badgeCls}" style="font-size:10px;flex-shrink:0;">${badgeText}</span>
+      </div>`;
+    }).join("");
+
+    html += `<div style="background:var(--white);border:1px solid var(--border);border-top:3px solid ${color};padding:18px;display:flex;flex-direction:column;gap:0;">
+
+      <!-- 헤더 -->
+      <div style="margin-bottom:14px;">
+        <div style="font-size:10px;font-weight:700;color:${color};font-family:'Courier New',monospace;letter-spacing:.06em;margin-bottom:4px;">${num} ${meta.title}</div>
+        <div style="font-size:12px;color:var(--text-muted);">DRI: ${meta.dri}</div>
+      </div>
+
+      <!-- 매출 -->
+      <div style="border-top:1px solid var(--border);padding-top:12px;margin-bottom:14px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);font-family:'Courier New',monospace;letter-spacing:.06em;margin-bottom:8px;">REVENUE</div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+          <span style="font-size:11px;color:var(--text-muted);">연간 목표</span>
+          <span style="font-size:18px;font-weight:800;color:var(--text);">${fmtB(planAnnual)}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:11px;color:var(--text-muted);">1Q Actual / Plan${num==="①"?`<span style="font-size:10px;color:var(--text-muted);"> (HB1 기준)</span>`:""}${num==="②"?`<span style="font-size:10px;color:var(--text-muted);"> (4Q 런칭)</span>`:""}
+          </span>
+          <span style="font-size:12px;font-weight:600;">${fmtB(actualQ1)} / ${fmtB(planQ1)}${q1Pct !== null ? `<span style="color:${pctColor};margin-left:5px;">${q1Pct}%</span>` : ""}</span>
+        </div>
+        <div style="background:var(--border);height:4px;border-radius:2px;">
+          <div style="background:${color};height:4px;border-radius:2px;width:${barW}%;"></div>
+        </div>
+      </div>
+
+      <!-- KPI -->
+      ${kpiDisplay.length > 0 ? `<div style="border-top:1px solid var(--border);padding-top:12px;margin-bottom:14px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);font-family:'Courier New',monospace;letter-spacing:.06em;margin-bottom:8px;">KPI</div>
+        ${kpiDisplay.map(k => {
+          const hasStatus = k.status && k.status.trim() !== "";
+          const hasQ1 = k.q1 !== null && k.q1 !== undefined && k.q1 !== "";
+          const hasPlan = k.plan !== null && k.plan !== undefined && k.plan !== "";
+          const right = hasStatus
+            ? `<span class="badge ${kpiStatusClass(k.status)}" style="font-size:10px;flex-shrink:0;">${k.status}</span>`
+            : `<span style="font-size:11px;font-family:'Courier New',monospace;flex-shrink:0;color:var(--text-dim);">${hasQ1 ? `1Q: <strong>${k.q1}</strong>` : hasPlan ? `Plan: ${k.plan}` : "—"}${k.unit ? `<span style="color:var(--text-muted);margin-left:2px;">${k.unit}</span>` : ""}</span>`;
+          return `<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
+            <span style="font-size:12px;color:var(--text-dim);flex:1;line-height:1.5;">${k.name}</span>
+            ${right}
+          </div>`;
+        }).join("")}
+      </div>` : ""}
+
+      <!-- 마일스톤 -->
+      <div style="border-top:1px solid var(--border);padding-top:12px;flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-size:10px;font-weight:700;color:var(--text-muted);font-family:'Courier New',monospace;letter-spacing:.06em;">MILESTONES</div>
+          <span style="font-size:11px;font-weight:600;color:var(--text-dim);">${msDone} / ${msTotal} 완료</span>
+        </div>
+        <div style="background:var(--border);height:4px;border-radius:2px;margin-bottom:10px;">
+          <div style="background:${msDone===msTotal&&msTotal>0?"var(--green)":msDone/msTotal>=0.5?"#B8860B":"var(--accent)"};height:4px;border-radius:2px;width:${msTotal>0?Math.round(msDone/msTotal*100):0}%;"></div>
+        </div>
+        ${msHtml}
+      </div>
+
+    </div>`;
+  }
   container.innerHTML = html;
+
+  // 전체 마일스톤 아코디언 숨김 (카드 안에 포함됐으므로)
+  const acc = document.getElementById("ms-accordion");
+  if (acc) acc.style.display = "none";
 }
+
+function renderKpi() {}
+function renderRevenue() {}
+function renderInitiativeRevenue() {}
 
 // ── 03. KPI Detail 렌더링 ──
 
